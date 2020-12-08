@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { User } from '../models/user';
+import { User } from '../_models/user';
+import { ReplaySubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -14,18 +15,19 @@ export class AccountService {
 
   constructor(private http: HttpClient) {}
 
+  // tslint:disable-next-line: typedef
   login(model: any) {
     return this.http.post(this.baseUrl + 'account/login', model).pipe(
-      map((response: any) => {
+      map((response: User) => {
         const user = response;
         if (user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUserSource.next(user);
+          this.setCurrentUser(user);
+          // this.presence.createHubConnection(user);
         }
       })
     );
   }
-  
+
   // tslint:disable-next-line: typedef
   register(model: any) {
     return this.http.post(this.baseUrl + 'account/register', model).pipe(
@@ -35,16 +37,17 @@ export class AccountService {
           this.currentUserSource.next(user);
         }
       })
-    )
+    );
   }
 
-
+  // tslint:disable-next-line: typedef
   setCurrentUser(user: User) {
     this.currentUserSource.next(user);
   }
 
+  // tslint:disable-next-line: typedef
   logout() {
     localStorage.removeItem('user');
-    this.currentUserSource.next(undefined);
+    this.currentUserSource.next(null);
   }
 }

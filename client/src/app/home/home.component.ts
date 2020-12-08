@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
   }
 
   
+  // tslint:disable-next-line: typedef
   cancelRegisterMode(event: boolean) {
     this.registerMode = event;
   }
